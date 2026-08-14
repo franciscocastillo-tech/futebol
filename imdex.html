@@ -1,0 +1,725 @@
+html
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>⚽ Futebol Match - Placar Interativo</title>
+    <style>
+        /* ===== RESET E ESTILOS GLOBAIS ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: linear-gradient(145deg, #ffffff, #f0f4f8);
+            border-radius: 40px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== CABEÇALHO ===== */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            color: #1a472a;
+            letter-spacing: 2px;
+        }
+
+        .header h1 span {
+            background: linear-gradient(45deg, #f39c12, #e74c3c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header .subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        /* ===== SELEÇÃO DE TIMES ===== */
+        .selecao-times {
+            background: #e8edf3;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .selecao-times label {
+            font-weight: bold;
+            color: #1a472a;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .selecao-times select {
+            padding: 10px 18px;
+            border: 2px solid #1a472a;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            background: white;
+            color: #1a472a;
+            cursor: pointer;
+            transition: 0.3s;
+            min-width: 140px;
+        }
+
+        .selecao-times select:hover {
+            border-color: #f39c12;
+            transform: scale(1.02);
+        }
+
+        .selecao-times .vs {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e74c3c;
+            padding: 0 10px;
+        }
+
+        /* ===== PLACAR ===== */
+        .placar-principal {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #1a472a, #2d7a3a);
+            border-radius: 30px;
+            padding: 25px 35px;
+            margin-bottom: 25px;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .time-placar {
+            text-align: center;
+            flex: 1;
+        }
+
+        .time-placar .nome-time {
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            min-height: 30px;
+        }
+
+        .time-placar .gols {
+            color: #fff;
+            font-size: 56px;
+            font-weight: bold;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            font-family: 'Courier New', monospace;
+        }
+
+        .placar-divisor {
+            color: #fff;
+            font-size: 48px;
+            font-weight: bold;
+            opacity: 0.5;
+            padding: 0 20px;
+        }
+
+        /* ===== TIMER ===== */
+        .timer-area {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .timer-area .timer {
+            font-size: 48px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: #1a472a;
+            background: #e8edf3;
+            display: inline-block;
+            padding: 8px 35px;
+            border-radius: 20px;
+            letter-spacing: 3px;
+        }
+
+        /* ===== BOTÕES DE CONTROLE ===== */
+        .controles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .controles button {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 100px;
+            justify-content: center;
+        }
+
+        .controles button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .controles button:active {
+            transform: scale(0.95);
+        }
+
+        .btn-iniciar {
+            background: #27ae60;
+            color: white;
+        }
+        .btn-iniciar:hover {
+            background: #2ecc71;
+        }
+
+        .btn-pausar {
+            background: #f39c12;
+            color: white;
+        }
+        .btn-pausar:hover {
+            background: #f1c40f;
+        }
+
+        .btn-zerar {
+            background: #e74c3c;
+            color: white;
+        }
+        .btn-zerar:hover {
+            background: #c0392b;
+        }
+
+        .btn-gol {
+            background: #2980b9;
+            color: white;
+            flex: 0.6;
+        }
+        .btn-gol:hover {
+            background: #3498db;
+        }
+
+        .btn-gol-vermelho {
+            background: #c0392b;
+            color: white;
+            flex: 0.6;
+        }
+        .btn-gol-vermelho:hover {
+            background: #e74c3c;
+        }
+
+        /* ===== BOTÕES DE GOL ===== */
+        .gols-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .gols-buttons button {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .gols-buttons button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-gol-casa {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+        }
+
+        .btn-gol-fora {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .btn-reverter {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            color: white;
+        }
+
+        /* ===== ESTATÍSTICAS ===== */
+        .estatisticas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            background: #e8edf3;
+            border-radius: 20px;
+            padding: 18px 22px;
+            margin-bottom: 20px;
+        }
+
+        .estatisticas .stat {
+            text-align: center;
+        }
+
+        .estatisticas .stat .numero {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1a472a;
+        }
+
+        .estatisticas .stat .label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ===== HISTÓRICO ===== */
+        .historico {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 15px 20px;
+            max-height: 100px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+        }
+
+        .historico h4 {
+            color: #1a472a;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .historico p {
+            font-size: 13px;
+            color: #555;
+            padding: 4px 0;
+            border-bottom: 1px solid #eee;
+            margin: 0;
+        }
+
+        .historico p:last-child {
+            border-bottom: none;
+        }
+
+        .historico .gol-casa {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .historico .gol-fora {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        /* ===== RESPONSIVO ===== */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            .placar-principal {
+                padding: 15px 20px;
+                flex-direction: row;
+            }
+
+            .time-placar .gols {
+                font-size: 40px;
+            }
+
+            .time-placar .nome-time {
+                font-size: 14px;
+            }
+
+            .placar-divisor {
+                font-size: 32px;
+                padding: 0 10px;
+            }
+
+            .timer-area .timer {
+                font-size: 32px;
+                padding: 6px 20px;
+            }
+
+            .header h1 {
+                font-size: 26px;
+            }
+
+            .selecao-times {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .selecao-times .vs {
+                padding: 0;
+            }
+
+            .controles button {
+                font-size: 14px;
+                padding: 10px 16px;
+                min-width: 70px;
+            }
+
+            .gols-buttons button {
+                font-size: 15px;
+                padding: 12px 18px;
+                min-width: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- ===== CABEÇALHO ===== -->
+        <div class="header">
+            <h1>⚽ <span>Futebol Match</span></h1>
+            <p class="subtitle">Placar interativo com seleção de times</p>
+        </div>
+
+        <!-- ===== SELEÇÃO DE TIMES ===== -->
+        <div class="selecao-times">
+            <label>
+                🏠 Time Casa
+                <select id="timeCasa">
+                    <option value="Brasil">🇧🇷 Brasil</option>
+                    <option value="Argentina">🇦🇷 Argentina</option>
+                    <option value="Alemanha">🇩🇪 Alemanha</option>
+                    <option value="França">🇫🇷 França</option>
+                    <option value="Inglaterra">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra</option>
+                    <option value="Espanha">🇪🇸 Espanha</option>
+                    <option value="Itália">🇮🇹 Itália</option>
+                    <option value="Portugal">🇵🇹 Portugal</option>
+                    <option value="Holanda">🇳🇱 Holanda</option>
+                </select>
+            </label>
+
+            <span class="vs">⚡ VS ⚡</span>
+
+            <label>
+                Time Visitante
+                <select id="timeVisitante">
+                    <option value="Argentina">🇦🇷 Argentina</option>
+                    <option value="Brasil">🇧🇷 Brasil</option>
+                    <option value="Alemanha">🇩🇪 Alemanha</option>
+                    <option value="França">🇫🇷 França</option>
+                    <option value="Inglaterra">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra</option>
+                    <option value="Espanha">🇪🇸 Espanha</option>
+                    <option value="Itália">🇮🇹 Itália</option>
+                    <option value="Portugal">🇵🇹 Portugal</option>
+                    <option value="Holanda">🇳🇱 Holanda</option>
+                </select>
+            </label>
+        </div>
+
+        <!-- ===== PLACAR PRINCIPAL ===== -->
+        <div class="placar-principal">
+            <div class="time-placar">
+                <div class="nome-time" id="nomeCasa">Brasil</div>
+                <div class="gols" id="golsCasa">0</div>
+            </div>
+            <div class="placar-divisor">⏳</div>
+            <div class="time-placar">
+                <div class="nome-time" id="nomeVisitante">Argentina</div>
+                <div class="gols" id="golsVisitante">0</div>
+            </div>
+        </div>
+
+        <!-- ===== TIMER ===== -->
+        <div class="timer-area">
+            <div class="timer" id="timer">00:00</div>
+        </div>
+
+        <!-- ===== BOTÕES DE CONTROLE ===== -->
+        <div class="controles">
+            <button class="btn-iniciar" id="iniciar">▶ Iniciar</button>
+            <button class="btn-pausar" id="pausar">⏸ Pausar</button>
+            <button class="btn-zerar" id="zerar">⏹ Zerar</button>
+        </div>
+
+        <!-- ===== BOTÕES DE GOL ===== -->
+        <div class="gols-buttons">
+            <button class="btn-gol-casa" id="golCasa">⚽ Gol Casa</button>
+            <button class="btn-gol-fora" id="golVisitante">⚽ Gol Visitante</button>
+            <button class="btn-reverter" id="reverter">↩ Reverter Último</button>
+        </div>
+
+        <!-- ===== ESTATÍSTICAS ===== -->
+        <div class="estatisticas">
+            <div class="stat">
+                <div class="numero" id="totalGols">0</div>
+                <div class="label">Total de Gols</div>
+            </div>
+            <div class="stat">
+                <div class="numero" id="mediaGols">0.0</div>
+                <div class="label">Média por minuto</div>
+            </div>
+            <div class="stat">
+                <div class="numero" id="minutoAtual">0</div>
+                <div class="label">Minuto atual</div>
+            </div>
+        </div>
+
+        <!-- ===== HISTÓRICO ===== -->
+        <div class="historico">
+            <h4>📋 Histórico de gols</h4>
+            <div id="historicoGols">
+                <p style="color:#999; font-style:italic;">Nenhum gol registrado ainda</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // =====================================================
+        //  JAVASCRIPT COMPLETO
+        // =====================================================
+
+        // ===== ELEMENTOS DOM =====
+        const timerEl = document.getElementById('timer');
+        const golsCasaEl = document.getElementById('golsCasa');
+        const golsVisitanteEl = document.getElementById('golsVisitante');
+        const nomeCasaEl = document.getElementById('nomeCasa');
+        const nomeVisitanteEl = document.getElementById('nomeVisitante');
+        const totalGolsEl = document.getElementById('totalGols');
+        const mediaGolsEl = document.getElementById('mediaGols');
+        const minutoAtualEl = document.getElementById('minutoAtual');
+        const historicoEl = document.getElementById('historicoGols');
+
+        const selectCasa = document.getElementById('timeCasa');
+        const selectVisitante = document.getElementById('timeVisitante');
+
+        // ===== VARIÁVEIS DE ESTADO =====
+        let segundos = 0;
+        let timerRodando = false;
+        let intervalo;
+
+        let golsCasa = 0;
+        let golsVisitante = 0;
+
+        let historico = [];
+
+        // ===== TIMER =====
+        function atualizarTimer() {
+            const min = String(Math.floor(segundos / 60)).padStart(2, '0');
+            const seg = String(segundos % 60).padStart(2, '0');
+            timerEl.textContent = `${min}:${seg}`;
+            minutoAtualEl.textContent = Math.floor(segundos / 60);
+            atualizarMediaGols();
+        }
+
+        function iniciarTimer() {
+            if (!timerRodando) {
+                timerRodando = true;
+                intervalo = setInterval(() => {
+                    segundos++;
+                    atualizarTimer();
+                }, 1000);
+            }
+        }
+
+        function pausarTimer() {
+            timerRodando = false;
+            clearInterval(intervalo);
+        }
+
+        function zerarTimer() {
+            pausarTimer();
+            segundos = 0;
+            atualizarTimer();
+        }
+
+        // ===== ATUALIZAR ESTATÍSTICAS =====
+        function atualizarEstatisticas() {
+            const total = golsCasa + golsVisitante;
+            totalGolsEl.textContent = total;
+        }
+
+        function atualizarMediaGols() {
+            const total = golsCasa + golsVisitante;
+            const minutos = segundos / 60;
+            if (minutos > 0) {
+                mediaGolsEl.textContent = (total / minutos).toFixed(2);
+            } else {
+                mediaGolsEl.textContent = '0.0';
+            }
+        }
+
+        // ===== ATUALIZAR NOMES DOS TIMES =====
+        function atualizarNomesTimes() {
+            nomeCasaEl.textContent = selectCasa.value;
+            nomeVisitanteEl.textContent = selectVisitante.value;
+        }
+
+        selectCasa.addEventListener('change', () => {
+            atualizarNomesTimes();
+            // Se o nome do time mudar, mantém o histórico coerente (opcional)
+        });
+
+        selectVisitante.addEventListener('change', () => {
+            atualizarNomesTimes();
+        });
+
+        // ===== FUNÇÃO PARA ADICIONAR GOL =====
+        function adicionarGol(time) {
+            if (time === 'casa') {
+                golsCasa++;
+                golsCasaEl.textContent = golsCasa;
+                historico.push({
+                    time: 'casa',
+                    nome: selectCasa.value,
+                    minuto: Math.floor(segundos / 60),
+                    segundo: segundos % 60
+                });
+            } else if (time === 'visitante') {
+                golsVisitante++;
+                golsVisitanteEl.textContent = golsVisitante;
+                historico.push({
+                    time: 'visitante',
+                    nome: selectVisitante.value,
+                    minuto: Math.floor(segundos / 60),
+                    segundo: segundos % 60
+                });
+            }
+            atualizarEstatisticas();
+            atualizarMediaGols();
+            renderizarHistorico();
+        }
+
+        // ===== REVERTER ÚLTIMO GOL =====
+        function reverterUltimoGol() {
+            if (historico.length === 0) return;
+
+            const ultimo = historico.pop();
+
+            if (ultimo.time === 'casa') {
+                golsCasa--;
+                golsCasaEl.textContent = golsCasa;
+            } else {
+                golsVisitante--;
+                golsVisitanteEl.textContent = golsVisitante;
+            }
+
+            atualizarEstatisticas();
+            atualizarMediaGols();
+            renderizarHistorico();
+        }
+
+        // ===== RENDERIZAR HISTÓRICO =====
+        function renderizarHistorico() {
+            if (historico.length === 0) {
+                historicoEl.innerHTML = `<p style="color:#999; font-style:italic;">Nenhum gol registrado ainda</p>`;
+                return;
+            }
+
+            const html = historico.map((item, index) => {
+                const classe = item.time === 'casa' ? 'gol-casa' : 'gol-fora';
+                const emoji = item.time === 'casa' ? '🏠' : '✈️';
+                const minutoStr = `${item.minuto}:${String(item.segundo).padStart(2, '0')}`;
+                return `<p class="${classe}">${emoji} ${item.nome} marcou aos ${minutoStr} min</p>`;
+            }).join('');
+
+            historicoEl.innerHTML = html;
+            // Scroll para o final
+            historicoEl.parentElement.scrollTop = historicoEl.parentElement.scrollHeight;
+        }
+
+        // ===== ZERAR TUDO =====
+        function zerarTudo() {
+            zerarTimer();
+            golsCasa = 0;
+            golsVisitante = 0;
+            golsCasaEl.textContent = '0';
+            golsVisitanteEl.textContent = '0';
+            historico = [];
+            renderizarHistorico();
+            atualizarEstatisticas();
+            atualizarMediaGols();
+        }
+
+        // ===== EVENTOS DOS BOTÕES =====
+        document.getElementById('iniciar').addEventListener('click', iniciarTimer);
+        document.getElementById('pausar').addEventListener('click', pausarTimer);
+        document.getElementById('zerar').addEventListener('click', zerarTudo);
+
+        document.getElementById('golCasa').addEventListener('click', () => {
+            adicionarGol('casa');
+        });
+
+        document.getElementById('golVisitante').addEventListener('click', () => {
+            adicionarGol('visitante');
+        });
+
+        document.getElementById('reverter').addEventListener('click', reverterUltimoGol);
+
+        // ===== INICIALIZAÇÃO =====
+        atualizarNomesTimes();
+        atualizarTimer();
+        atualizarEstatisticas();
+        renderizarHistorico();
+
+        // ===== ATALHOS DO TECLADO (EXTRA) =====
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') iniciarTimer();
+            if (e.key === ' ') {
+                e.preventDefault();
+                pausarTimer();
+            }
+            if (e.key === 'r' || e.key === 'R') zerarTudo();
+            if (e.key === '1') adicionarGol('casa');
+            if (e.key === '2') adicionarGol('visitante');
+            if (e.key === 'z' || e.key === 'Z') reverterUltimoGol();
+        });
+
+        console.log('⚽ Futebol Match carregado com sucesso!');
+        console.log('🎮 Atalhos: Enter=Iniciar | Espaço=Pausar | R=Zerar | 1=Gol Casa | 2=Gol Visitante | Z=Reverter');
+    </script>
+
+</body>
+</html>
